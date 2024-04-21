@@ -1,0 +1,216 @@
+##Pythonによるクラスタリング
+
+# tensuu.csvを読み込む
+import pandas as pd
+group1 = pd.read_csv("./tensuu.csv")
+group1
+
+
+
+import matplotlib
+from scipy.cluster.hierarchy import dendrogram, linkage
+import pylab as plt
+
+#クラスタリング
+result1 = linkage(group1, method = 'single')
+
+name = ('田中一郎','鈴木太郎','佐藤春子','山本夏子')
+
+#デンドログラム（樹形図）の構築
+dendrogram(
+    result1,
+    leaf_rotation=90.,  # 縦軸のラベルを９０度回転
+    leaf_font_size=14.,  # フォントサイズ
+    labels=name)
+plt.show()
+
+
+
+import matplotlib
+from scipy.cluster.hierarchy import dendrogram, linkage
+import pylab as plt
+
+#クラスタリング
+result1 = linkage(group1, method = 'single')
+
+name = ('Tanaka','Suzuki','Sato','Yamamoto')
+
+#デンドログラム（樹形図）の構築
+dendrogram(
+    result1,
+    leaf_rotation=90.,  # 縦軸のラベルを９０度回転
+    leaf_font_size=14.,  # フォントサイズ
+    labels=name)
+plt.show()
+
+
+group2 = pd.DataFrame({'English':[80,90,80,70,30,90,60,50,30,70],
+                     'Mathemetics':[40,80,30,80,40,20,40,70,50,75]},
+                   index=['Tanaka','Suzuki','Satoh','Yamada','Takahashi','Yamamoto','Yoshida','Itoh','Watanabe','Kobayashi'])
+
+name =('Tanaka','Suzuki','Satoh','Yamada','Takahashi','Yamamoto','Yoshida','Itoh','Watanabe','Kobayashi')
+
+
+#６つの手法でクラスターを併合
+from scipy.cluster.hierarchy import dendrogram, linkage
+import pylab as plt
+
+#単連結法
+result1 = linkage(group2, method = 'single')
+#完全連結法
+result2 = linkage(group2, method = 'complete')
+#群平均法
+result3 = linkage(group2, method = 'average')
+#重心法
+result4 = linkage(group2, method = 'weighted')
+#ウォード法
+result5 = linkage(group2, method = 'ward')
+#メディアン法
+result6 = linkage(group2, method = 'centroid')
+
+
+import pylab as plt
+plt.figure(figsize=(14,14))
+
+#result1～6までをプロット
+plt.subplot(231)
+dendrogram(
+    result1,
+    leaf_rotation=90.,  
+    leaf_font_size=10., 
+    labels=name
+)
+plt.plot()
+
+plt.subplot(232)
+dendrogram(
+    result2,
+    leaf_rotation=90.,  # rotates the x axis labels
+    leaf_font_size=10.,  # font size for the x axis labels
+    labels=name
+)
+plt.plot()
+
+plt.subplot(233)
+dendrogram(
+    result3,
+    leaf_rotation=90.,  # rotates the x axis labels
+    leaf_font_size=10.,  # font size for the x axis labels
+    labels=name
+)
+plt.plot()
+
+plt.subplot(234)
+dendrogram(
+    result4,
+    leaf_rotation=90.,  # rotates the x axis labels
+    leaf_font_size=10.,  # font size for the x axis labels
+    labels=name
+)
+plt.plot()
+
+plt.subplot(235)
+dendrogram(
+    result5,
+    leaf_rotation=90.,  # rotates the x axis labels
+    leaf_font_size=10.,  # font size for the x axis labels
+    labels=name
+)
+plt.plot()
+
+plt.subplot(236)
+dendrogram(
+    result6,
+    leaf_rotation=90.,  # rotates the x axis labels
+    leaf_font_size=10.,  # font size for the x axis labels
+    labels=name
+)
+plt.plot()
+
+plt.show()
+
+
+
+
+import pandas as pd
+#身長と体重のデータを読み込む
+childrenk = pd.read_csv("https://raw.githubusercontent.com/futurebridge/ZukaiML/master/childrenk.csv",encoding="SHIFT-JIS")
+#欠損値を削除する
+childrenk = childrenk.dropna()
+
+from sklearn.cluster import KMeans
+import numpy as np
+import matplotlib.pyplot as plt
+
+#kmeansのモデル生成
+kmeans = KMeans(n_clusters=6, init='k-means++', random_state=0)
+#モデルについてchildrenkデータを当てはめる
+y_kmeans = kmeans.fit_predict(childrenk)
+# グラフの作成
+plt.scatter(childrenk.age, childrenk.length, c=y_kmeans, s=20, cmap='viridis')
+#中心点を求める
+centers = kmeans.cluster_centers_
+#中心点をプロット
+plt.scatter(centers[:, 0], centers[:, 1], c='black', s=100, alpha=0.3)
+
+plt.show()
+
+
+childrenk['cluster_id']=y_kmeans
+
+
+#各クラスタの平均、個数を求める
+totalm=[]
+totalc=[]
+
+for i in range(6):
+    totalm.append(childrenk[childrenk['cluster_id']==i].mean())
+ 
+for i in range(6):
+    totalc.append(childrenk.cluster_id[childrenk['cluster_id']==i].count())
+
+pd.concat([pd.DataFrame(totalm),pd.DataFrame(totalc)],axis=1)
+
+
+
+#各クラスタの標準偏差を求める
+totals=[]
+
+for i in range(6):
+    totals.append(childrenk[childrenk['cluster_id']==i].std())
+    
+#偏差値を表示、cluster_idは同じ値なので偏差値は0
+pd.DataFrame(totals)
+
+
+distortions = []
+
+for i  in range(1,11):                
+    km = KMeans(n_clusters=i,
+                init='k-means++',     
+                n_init=10,
+                max_iter=300,
+                random_state=0)
+    km.fit(childrenk)                         
+    inertia_= np.round(km.inertia_,3) 
+    distortions.append(inertia_)  
+    print (inertia_)
+    
+plt.plot(range(1,11),distortions,marker='o')
+plt.xlabel('クラスタ数')
+plt.ylabel('Distortion')
+plt.show()
+
+
+from sklearn.cluster import KMeans
+import numpy as np
+import matplotlib.pyplot as plt
+
+kmeans = KMeans(n_clusters=3, init='random', random_state=0)
+y_kmeans = kmeans.fit_predict(childrenk)
+
+# グラフの作成
+plt.scatter(childrenk.age, childrenk.length, c=y_kmeans, s=20, cmap='viridis')
+centers = kmeans.cluster_centers_
+plt.scatter(centers[:, 0], centers[:, 1], c='black', s=100, alpha=0.3)
+plt.show()

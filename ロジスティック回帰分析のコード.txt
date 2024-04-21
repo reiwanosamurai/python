@@ -1,0 +1,19 @@
+##Pythonによるロジスティック回帰分析
+
+# cardio.csvを読み込む
+import pandas as pd
+cardio = pd.read_csv("./cardio.csv")
+cardio
+
+#説明変数と目的変数の抽出
+import numpy as np
+X = np.array(cardio[['A','B']])
+Y = np.array(cardio['Category']) 
+
+#ロジスティック回帰分析
+from sklearn.linear_model import LogisticRegression
+import statsmodels.api as sm
+model = sm.Logit(Y, sm.add_constant(X))
+result = model.fit(disp=0)
+print(result.summary())
+

@@ -1,0 +1,67 @@
+##Pythonによる主成分分析
+
+# beer.csvを読み込む
+import pandas as pd
+df = pd.read_csv("./beer.csv")
+df
+
+df.corr()
+
+import numpy  as np
+#固有値、固有ベクトルを求める
+W,v=np.linalg.eig(df.corr())
+
+#固有値を表示
+pd.DataFrame(W)
+
+
+#固有ベクトルを表示
+pd.DataFrame(v)
+
+import matplotlib.pyplot as plt
+#コク、キレ、香りのPC1,PC2をプロット
+plt.scatter(v[:, 2], v[:, 1], c='black', s=200, alpha=0.3)
+#0.3の縦線を引く
+plt.axvline(0.3,color="gray",linestyle="--")
+#-0.2の横線を引く
+plt.axhline(-0.2,color="gray",linestyle="--")
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+
+plt.show()
+
+
+#主成分分析の実施
+from sklearn.decomposition import PCA
+#２つの成分で分析
+pca = PCA(n_components=2)
+pca.fit(df)
+x=pca.fit_transform(df)
+#主成分の寄与率をもとめる
+pca.explained_variance_ratio_
+#各主成分をもとめる
+pca.components_
+
+#各ビールの第１主成分得点、第２主成分得点を求める
+pcv = pd.DataFrame(x,index=df.index,columns=['第１主成分','第２主成分'])
+
+pd.concat([df,pcv],axis=1)
+
+import matplotlib.cm as cm
+
+#画像サイズを決める
+plt.figure(figsize=(10,10))
+   
+#点ごとに色を変える
+colors = [plt.cm.hsv(25*i,1) for i in range(len(df.index))]
+#各ビールの散布図
+for i in range(len(df.index)) :
+    plt.scatter(x[i,0],x[i,1],c=colors[i],label=df.index[i],s=150, alpha=0.5)
+plt.xlabel("第１主成分")
+plt.ylabel("第２主成分")
+
+plt.legend()
+
+plt.show()
+
+

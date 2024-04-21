@@ -1,0 +1,97 @@
+### Pythonを実際に動かしてみよう
+
+# 演算
+print(1+1)
+print(1-1)
+print(2*2)
+print(10/2)
+
+
+# 変数
+hako = 'l_size'
+hako_length = 5
+hako_times = 5.5
+print(type(hako))
+print(type(hako_length))
+print(type(hako_times))
+print(hako_length + hako_times)
+
+
+#条件
+hako_length = 2
+if hako_length > 6:
+    print('dekai')
+elif hako_length == 0:
+    print('nai')
+else:
+    print('chiisai')
+
+
+#関数
+def hako_tumeru(arg):
+    hako_status = arg
+    
+    if(hako_status <10):
+        return 'mada hairu'
+    else:
+        return 'hairanai'
+print(hako_tumeru(2))
+
+
+
+# リスト
+hako_list = ['hako_small', 'hako_medium', 'hako_large']
+print(hako_list[0])
+
+
+# ループ１
+for index in range(3):
+    print(hako_list)
+
+
+# ループ２
+for item in hako_list:
+    print(item)
+
+
+# ファイルを開く
+with open('./hako.txt', 'r') as file:
+    print(file.read())
+
+
+# クラスとインスタンス
+class Card:
+    def __init__(self, date, user_name):
+        self.date = date
+        self.user_name = user_name
+    def message(self):
+        return 'この投稿は' + self.user_name + 'さんが' + self.date + 'に投稿しました'
+date_a = '2021-01-01'
+user_name_a = 'Taro'
+date_b = '2021-01-02'
+user_name_b = 'Hanako'
+card_a = Card(date_a, user_name_a)
+card_b = Card(date_b, user_name_b)
+print(card_b.message())
+
+
+# モジュールのインポート
+
+import math
+print(math.pi)
+
+import numpy
+numpy_list = [3, 1, 5, 10, 2093, 304, 123]
+print(numpy.sum(numpy_list))
+
+
+import pandas as pd
+df = pd.read_csv("./patient.csv")
+df
+
+# patient.csvの中身
+#患者ID	体重	食前血糖値
+#患者A	65	119
+#患者B	73	125
+#患者C	75	135
+#患者D	81	140

@@ -1,0 +1,29 @@
+##Pythonによる回帰分析
+
+# children.csvを読み込む
+import pandas as pd
+children = pd.read_csv("./children.csv")
+children
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import linregress
+
+# 散布図の作成
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=children, x='Age', y='Height')
+plt.title('Age vs. Height')
+plt.xlabel('Age (Years)')
+plt.ylabel('Height (cm)')
+
+# 回帰分析の実行
+regression_result = linregress(children['Age'], children['Height'])
+
+# 回帰直線の追加
+x = children['Age']
+plt.plot(x, regression_result.intercept + regression_result.slope*x, color='red')
+plt.show()
+
+# 回帰分析の結果を表示
+print(regression_result)
